@@ -1,0 +1,66 @@
+@font-face {
+    font-family: 'Roboto';
+    src: local('Roboto'), url(/fonts/Roboto-black.ttf);
+}
+
+* {
+    font-family: 'Roboto';
+}
+
+.form_auth {
+    width: 400px;
+    height: 400px;
+    margin: 0 auto;
+    background-color: rgb(39, 37, 37);
+    background-size: cover;
+    border-radius: 15px;
+}
+
+.form_auth_2 {
+    padding-top:15%;
+
+}
+
+.form_auth_head_text {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    font-size: 24px;
+    font-weight: 600;
+    background: #ffffff;
+    opacity: 0.8;
+}
+
+.form input{
+    display: block;
+    margin: 0 auto;
+    width: 80%;
+    height: 45px;
+    border-radius: 5px;  
+    border:none;
+    outline: none;
+    margin-bottom: 30px;
+    font-size: 30px;
+  }
+
+  .form_auth_button{
+      display: block;
+      width: 60%;
+      margin: 0 auto;
+      margin-top: 10px;
+      border-radius: 5px;
+      height: 40px;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+  }
+
+  .form_auth_button:hover {
+    color:white;
+    background-color: rgb(156, 151, 179);
+}
+
+.form_auth_button:focus {
+    box-shadow: 0 0 0 1px #cbd6ee;
+    outline: none;
+}
