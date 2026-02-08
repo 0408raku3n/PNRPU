@@ -1,0 +1,273 @@
+Найдено релизов: 66 (June 1993 — November 2025)
+[1/66] June 1993
+[2/66] November 1993
+[3/66] June 1994
+[4/66] November 1994
+[5/66] June 1995
+[6/66] December 1995
+[7/66] June 1996
+[8/66] November 1996
+[9/66] June 1997
+[10/66] November 1997
+[11/66] June 1998
+[12/66] November 1998
+[13/66] June 1999
+[14/66] November 1999
+[15/66] June 2000
+[16/66] November 2000
+[17/66] June 2001
+[18/66] November 2001
+[19/66] June 2002
+[20/66] November 2002
+[21/66] June 2003
+[22/66] November 2003
+[23/66] June 2004
+[24/66] November 2004
+[25/66] June 2005
+[26/66] November 2005
+[27/66] June 2006
+[28/66] November 2006
+[29/66] June 2007
+[30/66] November 2007
+[31/66] June 2008
+[32/66] November 2008
+[33/66] June 2009
+[34/66] November 2009
+[35/66] June 2010
+[36/66] November 2010
+[37/66] June 2011
+[38/66] November 2011
+[39/66] June 2012
+[40/66] November 2012
+[41/66] June 2013
+[42/66] November 2013
+[43/66] June 2014
+[44/66] November 2014
+[45/66] June 2015
+[46/66] November 2015
+[47/66] June 2016
+[48/66] November 2016
+[49/66] June 2017
+[50/66] November 2017
+[51/66] June 2018
+[52/66] November 2018
+[53/66] June 2019
+[54/66] November 2019
+[55/66] June 2020
+[56/66] November 2020
+[57/66] June 2021
+[58/66] November 2021
+[59/66] June 2022
+[60/66] November 2022
+[61/66] June 2023
+[62/66] November 2023
+[63/66] June 2024
+[64/66] November 2024
+[65/66] June 2025
+[66/66] November 2025
+
+======================================================================
+Текущий топ-10 стран по количеству систем
+country
+United States    171
+Japan             43
+Germany           40
+China             40
+France            22
+Canada            19
+Italy             18
+South Korea       15
+Taiwan            10
+Brazil            10
+Name: systems, dtype: int64
+
+======================================================================
+Текущий антитоп-10 стран по количеству систем
+country
+Portugal      1
+Belgium       1
+Morocco       1
+Bulgaria      1
+Argentina     1
+Iceland       1
+Luxembourg    1
+Hungary       1
+Denmark       1
+Vietnam       1
+Name: systems, dtype: int64
+
+======================================================================
+Топ-10 по росту числа систем за всё время
+country
+China           40.0
+Canada          16.0
+Italy           12.0
+South Korea     12.0
+Brazil           8.0
+Poland           8.0
+Saudi Arabia     7.0
+Norway           7.0
+Taiwan           7.0
+Sweden           6.0
+dtype: float64
+
+======================================================================
+Антитоп-10 по росту числа систем за всё время
+country
+Japan            -71.0
+United States    -61.0
+Germany          -16.0
+United Kingdom   -15.0
+Australia         -4.0
+France            -3.0
+Greece            -1.0
+Denmark           -1.0
+Switzerland       -1.0
+Mexico            -1.0
+dtype: float64
+
+======================================================================
+
+Топ-10 по росту числа систем за последние 5 лет
+country
+United States    49.0
+Germany          17.0
+Italy            12.0
+South Korea      10.0
+Japan             9.0
+Canada            8.0
+Taiwan            8.0
+Norway            6.0
+France            6.0
+Sweden            5.0
+dtype: float64
+
+======================================================================
+
+Антитоп-10 по росту числа систем за последние 5 лет
+country
+China            -148.0
+Ireland           -12.0
+Netherlands        -9.0
+United Kingdom     -2.0
+Hong Kong          -1.0
+Luxembourg         -1.0
+Cyprus              0.0
+Belarus             0.0
+Greece              0.0
+Indonesia           0.0
+dtype: float64
+
+========================= Russia =========================
+      release  systems  systems_share  total_rmax_pflops
+    June 1997        1            0.2               17.0
+November 1997        1            0.2               20.0
+    June 1998        1            0.2               20.0
+November 1998        1            0.2               20.0
+November 2001        1            0.2              109.0
+    June 2002        1            0.2              564.0
+November 2002        1            0.2              735.0
+    June 2003        2            0.4             1080.0
+November 2003        2            0.4             1173.0
+    June 2004        2            0.4             1457.0
+November 2004        2            0.4             2252.0
+    June 2005        3            0.6             7852.0
+November 2005        1            0.2             5355.0
+    June 2006        1            0.2             6646.0
+November 2006        2            0.4             9705.0
+    June 2007        5            1.0            31165.0
+November 2007        7            1.4            82615.0
+    June 2008        8            1.6           154618.0
+November 2008        8            1.6           222968.0
+    June 2009        4            0.8           166945.0
+November 2009        8            1.6           646246.0
+    June 2010       11            2.2           814710.0
+November 2010       11            2.2           867730.0
+    June 2011       12            2.4          1341586.0
+November 2011        5            1.0          1043069.0
+    June 2012        5            1.0          1293027.0
+November 2012        8            1.6          1990634.0
+    June 2013        8            1.6          2012186.0
+November 2013        5            1.0          1846613.0
+    June 2014        5            1.0          2046483.0
+November 2014        9            1.8          4883086.0
+    June 2015        8            1.6          4722203.0
+November 2015        7            1.4          4736512.0
+    June 2016        7            1.4          4989512.0
+November 2016        5            1.0          4411812.0
+    June 2017        3            0.6          3662012.0
+November 2017        3            0.6          3662012.0
+    June 2018        4            0.8          5335750.0
+November 2018        3            0.6          4580250.0
+    June 2019        2            0.4          3678350.0
+November 2019        3            0.6         10347350.0
+    June 2020        2            0.4          9147000.0
+November 2020        2            0.4          9147000.0
+    June 2021        3            0.6         11405000.0
+November 2021        7            1.4         73715000.0
+    June 2022        7            1.4         73715000.0
+November 2022        7            1.4         73715000.0
+    June 2023        7            1.4         73715000.0
+November 2023        7            1.4         73715000.0
+    June 2024        7            1.4         73715000.0
+November 2024        6            1.2         71457000.0
+    June 2025        6            1.2         71457000.0
+November 2025        5            1.0         68979000.0
+
+========================= China =========================
+      release  systems  systems_share  total_rmax_pflops
+    June 1995        1            0.2                6.0
+December 1995        1            0.2                6.0
+    June 1996        1            0.2                6.0
+November 1996        1            0.2                7.0
+November 1999        1            0.2               37.0
+    June 2000        2            0.4              100.0
+November 2001        3            0.6              396.0
+    June 2002        3            0.6              640.0
+November 2002        5            1.0             1899.0
+    June 2003        6            1.2             3193.0
+November 2003       12            2.4            11579.0
+    June 2004       14            2.8            27615.0
+November 2004       17            3.4            31937.0
+    June 2005       19            3.8            53479.0
+November 2005       17            3.4            59542.0
+    June 2006       28            5.6            94176.0
+November 2006       18            3.6            72192.0
+    June 2007       13            2.6            96403.0
+November 2007       10            2.0            87176.0
+    June 2008       12            2.4           140311.0
+November 2008       15            3.0           520962.0
+    June 2009       21            4.2           788125.0
+November 2009       21            4.2          1379877.0
+    June 2010       24            4.8          2992630.0
+November 2010       41            8.2          5688792.0
+    June 2011       61           12.2          7136315.0
+November 2011       74           14.8         10489499.0
+    June 2012       68           13.6         11397100.0
+November 2012       72           14.4         12349895.0
+    June 2013       66           13.2         47485018.0
+November 2013       63           12.6         48549093.0
+    June 2014       76           15.2         52129821.0
+November 2014       61           12.2         52105183.0
+    June 2015       37            7.4         49567686.0
+November 2015      109           21.8         88711111.0
+    June 2016      167           33.4        211142446.0
+November 2016      171           34.2        223571136.0
+    June 2017      159           31.8        234683092.0
+November 2017      202           40.4        298876659.0
+    June 2018      206           41.2        354544958.0
+November 2018      227           45.4        438228339.0
+    June 2019      220           44.0        466872778.0
+November 2019      228           45.6        531832674.0
+    June 2020      226           45.2        565553102.0
+November 2020      214           42.8        566635422.0
+    June 2021      188           37.6        541350722.0
+November 2021      173           34.6        530072392.0
+    June 2022      173           34.6        530240332.0
+November 2022      162           32.4        514491614.0
+    June 2023      134           26.8        465824474.0
+November 2023      105           21.0        409254244.0
+    June 2024       80           16.0        356860484.0
+November 2024       63           12.6        319062154.0
+    June 2025       47            9.4        281269604.0
+November 2025       40            8.0        204933614.0
