@@ -1,0 +1,1319 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Рейтинг — демо</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#ffffff;
+      --panel:#f6f6f6;
+      --text:#111111;
+      --muted:#6b6b6b;
+      --accent:#000000;
+      --glass: rgba(0,0,0,0.04);
+      --shadow: 0 6px 18px rgba(0,0,0,0.08);
+      --radius:12px;
+      --header-bg:#111111;
+      --header-text:#ffffff;
+      --footer-bg:#111111;
+      --footer-text:#ffffff;
+      font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      font-size: 12px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    /* Header (inverted) */
+    header.app-header{
+      position:fixed;top:0;left:0;right:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--header-bg);color:var(--header-text);border-bottom:1px solid rgba(255,255,255,0.06);z-index:40;backdrop-filter: blur(4px);
+    }
+    .header-left{display:flex;align-items:center;gap:16px}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo img{height:40px;width:40px;object-fit:contain;}
+    .logo .title{font-weight:700;color:var(--header-text)}
+    .header-links{display:flex;gap:14px}
+    .header-links a{text-decoration:none;color:rgba(255,255,255,0.8);padding:8px;border-radius:8px;font-weight:500}
+    .header-links a:hover{color:var(--header-text);background:rgba(255,255,255,0.03)}
+
+    .header-user{display:flex;align-items:center;gap:10px}
+    .user-btn{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:18px;cursor:pointer;border:1px solid rgba(255,255,255,0.06);color:var(--header-text);background:transparent}
+    .user-btn:hover{background:rgba(255,255,255,0.08)}
+    .user-avatar{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.06)}
+
+    /* Layout */
+    .layout {
+      flex: 1; /* занимает всё пространство между header и footer */
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 24px;
+      padding-top: 84px;
+      align-items: start;
+      max-width: 1200px; /* фиксируем ширину сайта */
+      margin: 0 auto;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    /* Sidebar (stops visually before footer) */
+    nav.sidebar{
+      position:sticky;top:84px;align-self:start;padding:18px;background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);
+      height:calc(80vh - 64px - 220px); /* tuned so sidebar doesn't overlap footer visually */
+      overflow:auto;
+    }
+    nav .nav-title{font-size: 18px;font-weight:700;margin-bottom:10px}
+    nav button.nav-item{font-size: 18px;display:flex;gap:10px;align-items:center;width:100%;padding:10px;border-radius:10px;border:0;background:transparent;cursor:pointer;text-align:left;font-weight:500;color:var(--text)}
+    nav button.nav-item:hover{background:var(--glass)}
+    nav button.nav-item.active{background:#000;color:#fff}
+
+    /* Main content */
+    main.content{padding-bottom:40px}
+    .panel{background:var(--panel);padding:18px;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:18px}
+    .controls{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+    .control{display:flex;flex-direction:column}
+    .control label{font-size:13px;color:var(--muted);margin-bottom:6px}
+    .control input, .control select{height:40px;padding:8px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.08);background:#fff;width:200px;}
+    .control .search{width:300px;}
+    .reset-control{display:flex;align-items:center;margin-left:auto;margin-top:24px;}
+    .reset-btn{height:40px;padding:8px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.08);background:#fff;cursor:pointer;font-size:15px;width:auto;min-width:120px;}
+
+    .table-wrap{overflow:auto;border-radius:10px}
+    table {width:100%;border-collapse:collapse;background:transparent}
+    thead th{position:sticky;top:0;background:linear-gradient(180deg,#fff,#fafafa);padding:12px 10px;text-align:left;font-weight:600;border-bottom:1px solid rgba(0,0,0,0.06)}
+    tbody td{padding:14px 10px;border-bottom:1px solid rgba(0,0,0,0.04)}
+    tbody tr{background:#fff}
+    tbody tr:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,0.04)}
+
+    th.rating,
+    td.rating {
+      text-align: right;
+      width: 100px;      /* одинаковая ширина во всех таблицах */
+      white-space: nowrap;
+    }
+    /* Последний столбец таблицы выравнивается вправо */
+    table td:last-child, table th:last-child {
+      text-align: right;
+      width: 100px;
+    }
+    .number{width:56px}
+
+    /* Footer (inverted, full width, updated) */
+    footer.app-footer {
+      flex-shrink: 0;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 22px 28px;
+      background: #111111;
+      color: #ffffff;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    footer .blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+    }
+
+    footer .block {
+      min-width: 220px;
+      flex: 1;
+    }
+
+    footer .block strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    footer a {
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 900px) {
+      footer .blocks {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+    }
+
+    @media (max-width:560px){
+      header.app-header{height:56px}
+      .layout{padding-top:72px}
+      .controls{gap:8px}
+      .control input, .control select{min-width:0;width:100%;}
+      .reset-control{margin-left:0;margin-top:0;}
+    }
+    /* --- Searchable select overlay styles --- */
+    .select-overlay-wrapper { position: relative; display: inline-block; width: 200px; }
+    .select-overlay-wrapper .native-select { display: none; }
+    .select-overlay-input {
+      height: 40px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.08);
+      background:#fff;
+      width:100%;
+      box-sizing:border-box;
+      font-size:14px;
+      cursor:text;
+    }
+    .select-overlay-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      max-height: 220px;
+      overflow:auto;
+      background:#fff;
+      border:1px solid rgba(0,0,0,0.08);
+      border-radius:10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      z-index: 60;
+      display:none;
+    }
+    .select-overlay-item {
+      padding:8px 12px;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .select-overlay-item:hover { background: rgba(0,0,0,0.04); }
+    .select-overlay-item.hidden { display:none; }
+    .select-overlay-noresults { padding:8px 12px; color: #777; font-size:13px; }
+  </style>
+
+<style>
+html, body { overflow-x:hidden; width:100%; }
+
+/* Base mobile fixes */
+@media(max-width:768px){
+  .header-links{display:none;}
+  .burger{display:block;cursor:pointer;margin-right:18px;}
+  .burger span{display:block;width:26px;height:3px;background:#fff;margin:5px 0;border-radius:2px;}
+
+  nav.sidebar{
+    position:fixed;
+    left:-260px;
+    top:0;
+    bottom:0;
+    width:240px;
+    transition:left .3s;
+    padding-top:6px;
+    z-index:999;
+  }
+  nav.sidebar.open{left:0;}
+
+  .overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.4);
+    z-index:998;
+  }
+  .overlay.show{display:block;}
+
+  /* Unified full width layout */
+  .layout{
+    grid-template-columns:1fr !important;
+    padding-left:0!important;
+    padding-right:0!important;
+    padding-top:56px!important;
+    margin:0!important;
+    width:100%!important;
+  }
+
+  main.content{
+    width:100%!important;
+    padding:0 10px!important;
+    margin:0!important;
+  }
+
+  .panel{
+    width:100%!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+
+  footer.app-footer{
+    width:100%!important;
+    margin:0!important;
+    padding-left:16px!important;
+    padding-right:16px!important;
+  }
+
+  .logo img {height: 32px; width: 32px;}
+}
+
+/* Stacked table for mobile */
+@media (max-width: 560px) {
+  .table-wrap {
+    overflow: visible;
+  }
+
+  .table-wrap table {
+    border: 0;
+    width: 100%;
+  }
+
+  .table-wrap table thead {
+    display: none;
+  }
+
+  .table-wrap table tbody tr {
+    display: block;
+    margin-bottom: 15px;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px;
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .table-wrap table tbody td {
+    display: block;
+    text-align: right !important;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    position: relative;
+    padding-left: 50%;
+    font-size: 14px;
+  }
+
+  .table-wrap table tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .table-wrap table tbody td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    top: 8px;
+    font-weight: 600;
+    color: var(--muted);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .table-wrap table tbody{
+    font-weight: bold;
+    color: var(--accent);
+  }
+
+  .table-wrap table tbody td.number {
+    display: none; /* Hide № on mobile as it's implied by order */
+  }
+
+  tbody tr:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+
+  .reset-control {
+    margin-top: 12px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .reset-btn {
+    width: 100%;
+  }
+}
+</style>
+
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo">
+        <!-- Поместите сюда реальную logo.png -->
+        <img src="img/PNRPU_white_logo.png" alt="logo" />
+      </div>
+      <nav class="header-links" aria-label="Верхние ссылки">
+        <a href="#" data-link>Главная</a>
+        <a href="#" data-link>Методология</a>
+        <a href="#" data-link>Помощь</a>
+      </nav>
+    </div>
+
+    <div class="header-user">
+      <button class="user-btn" aria-label="Профиль">
+        <img class="user-avatar" src="img/person_white.png" alt="avatar">
+        <span class="name">Хамидуллин Даниил</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Навигация приложения">
+      <div class="nav-title">Рейтинг:</div>
+      <button class="nav-item active" data-page="students">- студентов</button>
+      <button class="nav-item" data-page="groups">- групп</button>
+      <button class="nav-item" data-page="programs">- направлений</button>
+      <button class="nav-item" data-page="departments">- кафедр</button>
+      <button class="nav-item" data-page="faculties">- факультетов</button>
+      <div style="flex:1"></div>
+    </nav>
+
+    <main class="content">
+      <!-- Students panel -->
+      <section class="panel page" id="students" data-title="Рейтинг студентов">
+        <h2>Рейтинг студентов</h2>
+
+        <div class="controls">
+          <div class="control"><label>Поиск по ФИО</label><input class="search" id="s_name" placeholder="Введите ФИО" /></div>
+          <div class="control"><label>Группа</label><select id="s_group"><option value="">Все</option></select></div>
+          <div class="control"><label>Направление</label><select id="s_program"><option value="">Все</option></select></div>
+          <div class="control"><label>Кафедра</label><select id="s_department"><option value="">Все</option></select></div>
+          <div class="control"><label>Факультет</label><select id="s_faculty"><option value="">Все</option></select></div>
+          <div class="reset-control"><button class="reset-btn" id="reset_students">Сбросить</button></div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="tbl_students">
+            <thead>
+              <tr>
+                <th class="number">№</th>
+                <th>ФИО</th>
+                <th>Группа</th>
+                <th>Направление</th>
+                <th>Кафедра</th>
+                <th>Факультет</th>
+                <th class="rating">Рейтинг</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Groups panel -->
+      <section class="panel page" id="groups" style="display:none" data-title="Рейтинг групп">
+        <h2>Рейтинг групп</h2>
+
+        <div class="controls">
+          <div class="control"><label>Поиск по названию</label><input class="search" id="g_name" placeholder="Введите группу" /></div>
+          <div class="control"><label>Направление</label><select id="g_program"><option value="">Все</option></select></div>
+          <div class="control"><label>Кафедра</label><select id="g_department"><option value="">Все</option></select></div>
+          <div class="control"><label>Факультет</label><select id="g_faculty"><option value="">Все</option></select></div>
+          <div class="reset-control"><button class="reset-btn" id="reset_groups">Сбросить</button></div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="tbl_groups">
+            <thead>
+              <tr>
+                <th class="number">№</th>
+                <th>Группа</th>
+                <th>Направление</th>
+                <th>Кафедра</th>
+                <th>Факультет</th>
+                <th class="rating">Рейтинг</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Departments panel -->
+      <section class="panel page" id="departments" style="display:none" data-title="Рейтинг кафедр">
+        <h2>Рейтинг кафедр</h2>
+
+        <div class="controls">
+          <div class="control"><label>Поиск по названию</label><input class="search" id="d_name" placeholder="Введите кафедру" /></div>
+          <div class="control"><label>Факультет</label><select id="d_faculty"><option value="">Все</option></select></div>
+          <div class="reset-control"><button class="reset-btn" id="reset_departments">Сбросить</button></div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="tbl_departments">
+            <thead>
+              <tr>
+                <th class="number">№</th>
+                <th>Название</th>
+                <th>Факультет</th>
+                <th class="rating">Рейтинг</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Faculties panel -->
+      <section class="panel page" id="faculties" style="display:none" data-title="Рейтинг факультетов">
+        <h2>Рейтинг факультетов</h2>
+
+        <div class="controls">
+          <div class="control"><label>Поиск по названию</label><input class="search" id="f_name" placeholder="Введите факультет" /></div>
+          <div class="reset-control"><button class="reset-btn" id="reset_faculties">Сбросить</button></div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="tbl_faculties">
+            <thead>
+              <tr>
+                <th class="number">№</th>
+                <th>Название</th>
+                <th class="rating">Рейтинг</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel page" id="programs" style="display:none" data-title="Рейтинг направлений">
+        <h2>Рейтинг направлений</h2>
+
+        <div class="controls">
+          <div class="control">
+            <label>Поиск по названию</label>
+            <input class="search" id="p_name" placeholder="Введите направление" />
+          </div>
+          <div class="control">
+            <label>Кафедра</label>
+            <select id="p_department"><option value="">Все</option></select>
+          </div>
+          <div class="control">
+            <label>Факультет</label>
+            <select id="p_faculty"><option value="">Все</option></select>
+          </div>
+          <div class="reset-control"><button class="reset-btn" id="reset_programs">Сбросить</button></div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="tbl_programs">
+            <thead>
+              <tr>
+                <th class="number">№</th>
+                <th>Направление</th>
+                <th>Кафедра</th>
+                <th>Факультет</th>
+                <th class="rating">Рейтинг</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div style="height:18px"></div>
+
+  <!-- Footer (full width, inverted) -->
+  <footer class="app-footer">
+    <div class="blocks">
+      <div class="block">
+        <strong>Система рейтингов ПНИПУ</strong>
+        Интеллектуальная система расчета рейтинга<br>
+        студентов Пермского Политеха
+      </div>
+
+      <div class="block">
+        <strong>Контакты</strong>
+        614990, Пермский край, г. Пермь<br>
+        Комсомольский проспект, д. 29<br>
+        +7 (342) 2-198-520<br>
+        kanc@pstu.ru
+      </div>
+
+      <div class="block">
+        <strong><a href="#">Политика конфиденциальности</a></strong>
+      </div>
+
+      <div class="block">
+        <strong><a href="#">Условия использования</a></strong>
+      </div>
+
+      <div class="block">
+        <strong>Разработчик</strong>
+        Лаборатория "Интеллектуальные технологии в образовании" АСУ ВУЗ<br>
+        Все права защищены © 2025
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    /* --- Данные (фиктивные, на основе вашей иерархии) --- */
+    const faculties = [
+      {id: 'F-ET', name: 'ЭТФ', fullname: 'Электротехнический факультет', rating: 92.3},
+      {id: 'F-GN', name: 'ГНФ', fullname: 'Горно-нефтяной факультет', rating: 88.1},
+      {id: 'F-PMM', name: 'ФПММ', fullname: 'Факультет прикладной математики и механики', rating: 90.4}
+    ];
+
+    const departments = [
+      {id:'D-ITAS', name:'ИТАС', fullname: 'Информационные технологии и автоматизированные системы', faculty:'F-ET', rating:93.2},
+      {id:'D-AT',  name:'АТ', fullname: 'Автоматика и телемеханика', faculty:'F-ET', rating:89.7},
+      {id:'D-NGT', name:'НГТ', fullname: 'Нефтегазовые технологии', faculty:'F-GN', rating:87.5},
+      {id:'D-GF',  name:'ОФ', fullname: 'Общая физика', faculty:'F-PMM', rating:91.1},
+      {id:'D-MMS', name:'ММСП', fullname: 'Математическое моделирование систем и процессов', faculty:'F-PMM', rating:90.0}
+    ];
+
+    const groups = [
+      // Электротехнический факультет, Кафедра ИТА, Программная инженерия
+      {code:'РИС-22-1б',program:'Программная инженерия',dept:'D-ITAS',fac:'F-ET',rating:92.8},
+      {code:'РИС-22-2б',program:'Программная инженерия',dept:'D-ITAS',fac:'F-ET',rating:91.5},
+      {code:'РИС-23-1б',program:'Программная инженерия',dept:'D-ITAS',fac:'F-ET',rating:94.2},
+      {code:'РИС-23-2б',program:'Программная инженерия',dept:'D-ITAS',fac:'F-ET',rating:90.8},
+      {code:'РИС-23-3б',program:'Программная инженерия',dept:'D-ITAS',fac:'F-ET',rating:89.4},
+
+      // Электротехнический факультет, Кафедра ИТА, Информатика и вычислительная техника
+      {code:'АСУ-22-1б',program:'Информатика и вычислительная техника',dept:'D-ITAS',fac:'F-ET',rating:95.5},
+      {code:'ИКС-22-1б',program:'Информатика и вычислительная техника',dept:'D-ITAS',fac:'F-ET',rating:88.7},
+      {code:'АСУ-23-1б',program:'Информатика и вычислительная техника',dept:'D-ITAS',fac:'F-ET',rating:91.3},
+      {code:'ИКС-23-1б',program:'Информатика и вычислительная техника',dept:'D-ITAS',fac:'F-ET',rating:89.9},
+      {code:'ИВТ-24-1б',program:'Информатика и вычислительная техника',dept:'D-ITAS',fac:'F-ET',rating:92.2},
+      {code:'ИВТ-24-2б',program:'Информатика и вычислительная техника',dept:'D-ITAS',fac:'F-ET',rating:90.0},
+
+      // Электротехнический факультет, Кафедра АТ, Информационная безопасность
+      {code:'КЗИ-22-1б',program:'Информационная безопасность',dept:'D-AT',fac:'F-ET',rating:91.4},
+      {code:'КЗИ-23-1б',program:'Информационная безопасность',dept:'D-AT',fac:'F-ET',rating:89.8},
+      {code:'КЗИ-24-1б',program:'Информационная безопасность',dept:'D-AT',fac:'F-ET',rating:90.9},
+
+      // Электротехнический факультет, Кафедра АТ, Автоматика и телемеханика
+      {code:'АТ-22-1б',program:'Автоматика и телемеханика',dept:'D-AT',fac:'F-ET',rating:87.3},
+      {code:'АТ-23-1б',program:'Автоматика и телемеханика',dept:'D-AT',fac:'F-ET',rating:88.6},
+      {code:'АТ-24-1б',program:'Автоматика и телемеханика',dept:'D-AT',fac:'F-ET',rating:86.9},
+
+      // Горно-нефтяной факультет
+      {code:'НГД-22-1б',program:'Нефтегазовое дело',dept:'D-NGT',fac:'F-GN',rating:88.5},
+      {code:'НГД-23-1б',program:'Нефтегазовое дело',dept:'D-NGT',fac:'F-GN',rating:87.4},
+      {code:'НГД-24-1б',program:'Нефтегазовое дело',dept:'D-NGT',fac:'F-GN',rating:86.3},
+      {code:'НГТ-22-1с',program:'Нефтегазовые техника и технологии',dept:'D-NGT',fac:'F-GN',rating:85.9},
+      {code:'НГТ-23-1с',program:'Нефтегазовые техника и технологии',dept:'D-NGT',fac:'F-GN',rating:86.7},
+      {code:'НГТ-24-1с',program:'Нефтегазовые техника и технологии',dept:'D-NGT',fac:'F-GN',rating:84.8},
+
+      // ФПММ
+      {code:'ФОП-22-1б',program:'Фотоника и оптоинформатика',dept:'D-GF',fac:'F-PMM',rating:90.3},
+      {code:'ФОП-23-1б',program:'Фотоника и оптоинформатика',dept:'D-GF',fac:'F-PMM',rating:91.2},
+      {code:'ФОП-24-1б',program:'Фотоника и оптоинформатика',dept:'D-GF',fac:'F-PMM',rating:89.7},
+      {code:'ПМ-22-1б',program:'Прикладная математика и информатика',dept:'D-MMS',fac:'F-PMM',rating:92.1},
+      {code:'ПМ-23-1б',program:'Прикладная математика и информатика',dept:'D-MMS',fac:'F-PMM',rating:91.0},
+      {code:'ПМ-24-1б',program:'Прикладная математика и информатика',dept:'D-MMS',fac:'F-PMM',rating:90.2}
+    ];
+
+    /* --- Генератор ФИО с учётом пола --- */
+    const surnames = [
+      'Смирнов','Иванов','Кузнецов','Соколов','Попов','Лебедев','Козлов','Новиков','Морозов','Павлов',
+      'Васильев','Петров','Сидоров','Орлов','Кравцов','Зайцев','Волков'
+    ];
+
+    const maleFirstNames = [
+      'Алексей','Иван','Дмитрий','Сергей','Андрей','Павел','Никита','Егор','Максим','Олег',
+      'Владимир','Роман','Антон',' Михаил'.trim()
+    ];
+
+    const femaleFirstNames = [
+      'Анна','Мария','Елена','Ольга','Наталья','Татьяна','Ирина','Ксения','Анастасия','Виктория',
+      'Полина','Екатерина'
+    ];
+
+    // Отчества (готовые формы)
+    const malePatronymics = [
+      'Александрович','Иванович','Дмитриевич','Сергеевич','Андреевич','Павлович','Никитич','Егорович','Максимович','Олегович',
+      'Владимирович','Романович','Антонович','Михайлович'
+    ];
+
+    const femalePatronymics = malePatronymics.map(p=>{
+      // преобразуем окончание -ич -> -ична / -ович -> -овна ; безопасный заменитель:
+      if (p.endsWith('вич')) return p.slice(0,-3)+'вна';
+      if (p.endsWith('ич')) return p.slice(0,-2)+'ична';
+      return p + 'на';
+    });
+
+    // Функция формирования полного имени с учётом пола
+    function makeFullName(gender, idx) {
+      // gender: 'M' | 'F'
+      const surname = surnames[idx % surnames.length];
+      if (gender === 'M') {
+        const fname = maleFirstNames[idx % maleFirstNames.length];
+        const patr = malePatronymics[idx % malePatronymics.length];
+        return `${surname} ${fname} ${patr}`;
+      } else {
+        // женская фамилия: добавляем «а»/«я», если это нужно
+        let femSurname = surname;
+        if (!/а$|я$|ева$|ова$|ина$/.test(femSurname)) {
+          // добавляем 'а' (подходит для большинства русских фамилий-мужских)
+          femSurname = femSurname + 'а';
+        }
+        const fname = femaleFirstNames[idx % femaleFirstNames.length];
+        const patr = femalePatronymics[idx % femalePatronymics.length];
+        return `${femSurname} ${fname} ${patr}`;
+      }
+    }
+
+    // Генерация студентов: на каждую группу — 2 человека, пол чередуется
+    const students = [];
+    let id = 1;
+    let nameCounter = 0;
+    for (const g of groups) {
+      // для первой записи — пол M, для второй — F (чередование)
+      for (let i=0;i<2;i++){
+        const gender = (i % 2 === 0) ? 'M' : 'F';
+        const name = makeFullName(gender, nameCounter++);
+        const rnd = (Math.random()*4-2).toFixed(2);
+        const rating = (parseFloat(g.rating) + parseFloat(rnd)).toFixed(2);
+        students.push({
+          id: id++,
+          name,
+          group: g.code,
+          groupId: g.code,
+          dept: g.dept,
+          fac: g.fac,
+          rating
+        });
+      }
+    }
+
+    /* --- Утилиты для DOM --- */
+    function el(q, ctx=document){return ctx.querySelector(q)}
+    function els(q, ctx=document){return Array.from((ctx||document).querySelectorAll(q))}
+
+    /* --- Функции для заполнения селектов динамически --- */
+    function populateSelect(select, items, valueKey, textKey, defaultOption = true) {
+      select.innerHTML = '';
+      if (defaultOption) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'Все';
+        select.appendChild(opt);
+      }
+      items.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item[valueKey];
+        opt.textContent = item[textKey];
+        if (item.fullname) {
+          opt.title = item.fullname;
+        }
+        select.appendChild(opt);
+      });
+    }
+
+    /* --- Каскадные обновления для каждой секции --- */
+    // Для студентов
+    function updateStudentFilters() {
+      const fac = el('#s_faculty').value;
+      const dept = el('#s_department').value;
+      const prog = el('#s_program').value;
+
+      // Фильтр кафедр по факультету
+      const filteredDepts = fac ? departments.filter(d => d.faculty === fac) : departments;
+      populateSelect(el('#s_department'), filteredDepts, 'id', 'name');
+
+      // Фильтр направлений по кафедре (или факультету, если кафедра не выбрана)
+      const filteredGroupsForProg = dept ? groups.filter(g => g.dept === dept) :
+                                     fac ? groups.filter(g => g.fac === fac) : groups;
+      const programs = Array.from(new Set(filteredGroupsForProg.map(g => g.program)));
+      populateSelect(el('#s_program'), programs.map(p => ({id: p, name: p})), 'id', 'name');
+
+      // Фильтр групп по направлению (или кафедре/факультету)
+      const filteredGroups = prog ? groups.filter(g => g.program === prog) :
+                             dept ? groups.filter(g => g.dept === dept) :
+                             fac ? groups.filter(g => g.fac === fac) : groups;
+      populateSelect(el('#s_group'), filteredGroups, 'code', 'code');
+
+      // Восстановить выбранные значения, если возможно
+      el('#s_department').value = dept && filteredDepts.some(d => d.id === dept) ? dept : '';
+      el('#s_program').value = prog && programs.includes(prog) ? prog : '';
+      el('#s_group').value = ''; // Сброс группы при изменении выше
+
+      renderStudents(getStudentFilters());
+    }
+
+    // Для групп
+    function updateGroupFilters() {
+      const fac = el('#g_faculty').value;
+      const dept = el('#g_department').value;
+
+      // Фильтр кафедр по факультету
+      const filteredDepts = fac ? departments.filter(d => d.faculty === fac) : departments;
+      populateSelect(el('#g_department'), filteredDepts, 'id', 'name');
+
+      // Фильтр направлений по кафедре (или факультету)
+      const filteredGroupsForProg = dept ? groups.filter(g => g.dept === dept) :
+                                     fac ? groups.filter(g => g.fac === fac) : groups;
+      const programs = Array.from(new Set(filteredGroupsForProg.map(g => g.program)));
+      populateSelect(el('#g_program'), programs.map(p => ({id: p, name: p})), 'id', 'name');
+
+      // Восстановить
+      el('#g_department').value = dept && filteredDepts.some(d => d.id === dept) ? dept : '';
+      el('#g_program').value = ''; // Сброс направления
+
+      renderGroups(getGroupFilters());
+    }
+
+    // Для направлений (программ)
+    function updateProgramFilters() {
+      const fac = el('#p_faculty').value;
+
+      // Фильтр кафедр по факультету
+      const filteredDepts = fac ? departments.filter(d => d.faculty === fac) : departments;
+      populateSelect(el('#p_department'), filteredDepts, 'id', 'name');
+
+      // Сброс кафедры
+      el('#p_department').value = '';
+
+      renderPrograms(getProgramFilters());
+    }
+
+    // Для кафедр
+    function updateDeptFilters() {
+      const fac = el('#d_faculty').value;
+
+      renderDepartments(getDeptFilters());
+    }
+
+    // Для факультетов (нет каскада)
+    function updateFacFilters() {
+      renderFaculties(getFacFilters());
+    }
+
+    /* --- Заполнение начальных селектов --- */
+    function fillInitialSelects() {
+      // Факультеты для всех секций
+      const facultySelectIds = ['s_faculty', 'g_faculty', 'd_faculty', 'p_faculty'];
+      facultySelectIds.forEach(id => {
+        populateSelect(el('#' + id), faculties, 'id', 'name');
+      });
+
+      // Начальные кафедры, направления, группы (будут обновляться каскадно)
+      updateStudentFilters();
+      updateGroupFilters();
+      updateProgramFilters();
+      updateDeptFilters();
+      updateFacFilters();
+    }
+
+    /* --- Отрисовка таблиц --- */
+    function fillTable(tblSelector, data, cols, headers){
+      const tbody = el(tblSelector + ' tbody');
+      tbody.innerHTML = '';
+      data.forEach((row, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = cols.map((c, colIdx) => `<td data-label="${headers[colIdx]}"${colIdx === headers.length - 1 ? ' class="rating"' : ''}>${c(row, idx)}</td>`).join('');
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderStudents(filter = {}) {
+      let list = students.slice();
+
+      if (filter.name) list = list.filter(s => s.name.toLowerCase().includes(filter.name.toLowerCase()));
+      if (filter.program) list = list.filter(s => {
+        const g = groups.find(gr => gr.code === s.group);
+        return g && g.program === filter.program;
+      });
+      if (filter.faculty) list = list.filter(s => s.fac === filter.faculty);
+      if (filter.department) list = list.filter(s => s.dept === filter.department);
+      if (filter.group) list = list.filter(s => s.group === filter.group);
+
+      // сортировка по рейтингу
+      list.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
+
+      const headers = ['№', 'ФИО', 'Группа', 'Направление', 'Кафедра', 'Факультет', 'Рейтинг'];
+
+      fillTable('#tbl_students', list, [
+        (r, i) => i + 1,
+        r => r.name,
+        r => r.group,
+        r => {
+          const g = groups.find(gr => gr.code === r.group);
+          return g ? g.program : '';
+        },
+        r => {
+          const d = departments.find(d => d.id === r.dept);
+          return d ? `<span title="${d.fullname}">${d.name}</span>` : r.dept;
+        },
+        r => {
+          const f = faculties.find(f => f.id === r.fac);
+          return f ? `<span title="${f.fullname}">${f.name}</span>` : r.fac;
+        },
+        r => r.rating
+      ], headers);
+    }
+
+
+    function renderGroups(filter = {}){
+      let list = groups.slice();
+      if(filter.name) list = list.filter(g => g.code.toLowerCase().includes(filter.name.toLowerCase()));
+      if(filter.program) list = list.filter(g => g.program === filter.program);
+      if(filter.faculty) list = list.filter(g => g.fac === filter.faculty);
+      if(filter.department) list = list.filter(g => g.dept === filter.department);
+      list.sort((a,b)=>b.rating - a.rating);
+
+      const headers = ['№', 'Группа', 'Направление', 'Кафедра', 'Факультет', 'Рейтинг'];
+
+      fillTable('#tbl_groups', list, [
+        (r,i) => i+1,
+        r => r.code,
+        r => r.program,
+        r => {
+          const d = departments.find(d=>d.id===r.dept);
+          return d ? `<span title="${d.fullname}">${d.name}</span>` : r.dept;
+        },
+        r => {
+          const f = faculties.find(f=>f.id===r.fac);
+          return f ? `<span title="${f.fullname}">${f.name}</span>` : r.fac;
+        },
+        r => r.rating.toFixed(2)
+      ], headers);
+    }
+
+    function renderDepartments(filter = {}){
+      let list = departments.slice();
+      if(filter.name) list = list.filter(d => d.name.toLowerCase().includes(filter.name.toLowerCase()) || d.fullname.toLowerCase().includes(filter.name.toLowerCase()));
+      if(filter.faculty) list = list.filter(d => d.faculty === filter.faculty);
+      list.sort((a,b)=>b.rating - a.rating);
+
+      const headers = ['№', 'Название', 'Факультет', 'Рейтинг'];
+
+      fillTable('#tbl_departments', list, [
+        (r,i) => i+1,
+        r => `<span title="${r.fullname}">${r.name}</span>`,
+        r => {
+          const f = faculties.find(f=>f.id===r.faculty);
+          return f ? `<span title="${f.fullname}">${f.name}</span>` : r.faculty;
+        },
+        r => r.rating.toFixed(2)
+      ], headers);
+    }
+
+    function renderFaculties(filter = {}){
+      let list = faculties.slice();
+      if(filter.name) list = list.filter(f => f.name.toLowerCase().includes(filter.name.toLowerCase()) || f.fullname.toLowerCase().includes(filter.name.toLowerCase()));
+      list.sort((a,b)=>b.rating - a.rating);
+
+      const headers = ['№', 'Название', 'Рейтинг'];
+
+      fillTable('#tbl_faculties', list, [
+        (r,i) => i+1,
+        r => `<span title="${r.fullname}">${r.name}</span>`,
+        r => r.rating.toFixed(2)
+      ], headers);
+    }
+    // === РЕЙТИНГ НАПРАВЛЕНИЙ ===
+function getProgramFilters() {
+  return {
+    name: el('#p_name').value.trim(),
+    faculty: el('#p_faculty').value,
+    department: el('#p_department').value
+  };
+}
+
+function renderPrograms(filter = {}) {
+  const map = {};
+
+  groups.forEach(g => {
+    // применяем фильтры
+    if (filter.name && !g.program.toLowerCase().includes(filter.name.toLowerCase())) return;
+    if (filter.faculty && g.fac !== filter.faculty) return;
+    if (filter.department && g.dept !== filter.department) return;
+
+    if (!map[g.program]) {
+      map[g.program] = { program: g.program, dept: g.dept, fac: g.fac, rating: 0, count: 0 };
+    }
+
+    map[g.program].rating += g.rating;
+    map[g.program].count++;
+  });
+
+  const list = Object.values(map).map(p => ({
+    ...p,
+    rating: (p.rating / p.count).toFixed(2)
+  }));
+
+  // сортируем по убыванию рейтинга
+  list.sort((a, b) => b.rating - a.rating);
+
+  const headers = ['№', 'Направление', 'Кафедра', 'Факультет', 'Рейтинг'];
+
+  fillTable('#tbl_programs', list, [
+    (r, i) => i + 1,
+    r => r.program,
+    r => {
+      const d = departments.find(d => d.id === r.dept);
+      return d ? `<span title="${d.fullname}">${d.name}</span>` : r.dept;
+    },
+    r => {
+      const f = faculties.find(f => f.id === r.fac);
+      return f ? `<span title="${f.fullname}">${f.name}</span>` : r.fac;
+    },
+    r => r.rating
+  ], headers);
+}
+
+function fillProgramSelects() {
+  // Теперь не нужно, т.к. используется fillInitialSelects и каскады
+}
+
+// === СОБЫТИЯ ФИЛЬТРОВ ===
+function wireProgramControls() {
+  el('#p_name').addEventListener('input', () => renderPrograms(getProgramFilters()));
+  el('#p_faculty').addEventListener('change', () => updateProgramFilters());
+  el('#p_department').addEventListener('change', () => renderPrograms(getProgramFilters()));
+}
+
+// === ДОБАВЛЯЕМ В SWITCHPAGE ===
+function switchPage(id) {
+  els('.page').forEach(p => p.style.display = 'none');
+  el('#' + id).style.display = 'block';
+  els('.nav-item').forEach(b => b.classList.remove('active'));
+  els(`.nav-item[data-page="${id}"]`)[0].classList.add('active');
+
+  if (id === 'students') renderStudents(getStudentFilters());
+  else if (id === 'groups') renderGroups(getGroupFilters());
+  else if (id === 'departments') renderDepartments(getDeptFilters());
+  else if (id === 'faculties') renderFaculties(getFacFilters());
+  else if (id === 'programs') renderPrograms(getProgramFilters());
+}
+
+// === ИНИЦИАЛИЗАЦИЯ ===
+fillInitialSelects();
+wireProgramControls();
+
+    /* --- Связывание контролов --- */
+    function wireControls(){
+      // Студенты
+      el('#s_name').addEventListener('input', ()=> renderStudents(getStudentFilters()));
+      el('#s_faculty').addEventListener('change', ()=> updateStudentFilters());
+      el('#s_department').addEventListener('change', ()=> updateStudentFilters());
+      el('#s_program').addEventListener('change', ()=> updateStudentFilters());
+      el('#s_group').addEventListener('change', ()=> renderStudents(getStudentFilters()));
+
+      el('#reset_students').addEventListener('click', () => {
+        el('#s_name').value = '';
+        el('#s_group').value = '';
+        el('#s_program').value = '';
+        el('#s_department').value = '';
+        el('#s_faculty').value = '';
+        updateStudentFilters();
+      });
+
+      // Группы
+      el('#g_name').addEventListener('input', ()=> renderGroups(getGroupFilters()));
+      el('#g_faculty').addEventListener('change', ()=> updateGroupFilters());
+      el('#g_department').addEventListener('change', ()=> updateGroupFilters());
+      el('#g_program').addEventListener('change', ()=> renderGroups(getGroupFilters()));
+
+      el('#reset_groups').addEventListener('click', () => {
+        el('#g_name').value = '';
+        el('#g_program').value = '';
+        el('#g_department').value = '';
+        el('#g_faculty').value = '';
+        updateGroupFilters();
+      });
+
+      // Кафедры
+      el('#d_name').addEventListener('input', ()=> renderDepartments(getDeptFilters()));
+      el('#d_faculty').addEventListener('change', ()=> renderDepartments(getDeptFilters()));
+
+      el('#reset_departments').addEventListener('click', () => {
+        el('#d_name').value = '';
+        el('#d_faculty').value = '';
+        renderDepartments({});
+      });
+
+      // Факультеты
+      el('#f_name').addEventListener('input', ()=> renderFaculties(getFacFilters()));
+
+      el('#reset_faculties').addEventListener('click', () => {
+        el('#f_name').value = '';
+        renderFaculties({});
+      });
+
+      // Направления уже в wireProgramControls
+      el('#reset_programs').addEventListener('click', () => {
+        el('#p_name').value = '';
+        el('#p_department').value = '';
+        el('#p_faculty').value = '';
+        updateProgramFilters();
+      });
+    }
+
+    function getStudentFilters(){ return { name: el('#s_name').value.trim(), program: el('#s_program').value, faculty: el('#s_faculty').value, department: el('#s_department').value, group: el('#s_group').value } }
+    function getGroupFilters(){ return { name: el('#g_name').value.trim(), program: el('#g_program').value, faculty: el('#g_faculty').value, department: el('#g_department').value } }
+    function getDeptFilters(){ return { name: el('#d_name').value.trim(), faculty: el('#d_faculty').value } }
+    function getFacFilters(){ return { name: el('#f_name').value.trim() } }
+
+    /* --- Навигация --- */
+    function initNav(){
+      els('nav.sidebar .nav-item').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          els('nav.sidebar .nav-item').forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          const page = btn.getAttribute('data-page');
+          switchPage(page);
+        });
+      });
+    }
+
+    /* --- Инициализация --- */
+    (function(){
+      wireControls();
+      initNav();
+      switchPage('students'); // Начальная страница
+      console.info('Демо данных загружено. Всего студентов:', students.length);
+    })();
+
+    document.querySelector('.user-btn').addEventListener('click', () => {
+      const name = encodeURIComponent('Даниил Х.');
+      window.location.href = `profile.html?user=${name}`;
+    });
+    
+    /* === Улучшенный overlay select с поиском и единственным открытым === */
+
+    let openOverlay = null; // глобальная ссылка на открытый dropdown
+
+    function createOverlayForSelect(select) {
+      if (select.dataset.overlayAttached === '1') return updateOverlayOptions(select);
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'select-overlay-wrapper';
+      select.parentNode.insertBefore(wrapper, select);
+      wrapper.appendChild(select);
+      select.classList.add('native-select');
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'select-overlay-input';
+      input.placeholder = 'Все'; // Изменено: плейсхолдер "Все" для ясности, когда инпут пустой
+      input.autocomplete = 'off';
+      wrapper.insertBefore(input, select);
+
+      const dropdown = document.createElement('div');
+      dropdown.className = 'select-overlay-dropdown';
+      wrapper.appendChild(dropdown);
+
+      select._overlay = { wrapper, input, dropdown };
+      select.dataset.overlayAttached = '1';
+
+      updateOverlayOptions(select);
+
+      // === Поведение открытия/закрытия ===
+      function openDropdown() {
+        if (openOverlay && openOverlay !== dropdown) {
+          openOverlay.style.display = 'none';
+        }
+        dropdown.style.display = 'block';
+        openOverlay = dropdown;
+        filterDropdown(input.value);
+      }
+
+      function closeDropdown() {
+        if (dropdown.style.display === 'block') dropdown.style.display = 'none';
+        if (openOverlay === dropdown) openOverlay = null;
+      }
+
+      wrapper.addEventListener('click', (e) => {
+        if (dropdown.style.display === 'block') {
+          closeDropdown();
+        } else {
+          input.focus();
+          openDropdown();
+        }
+        e.stopPropagation();
+      });
+
+      // --- Клавиши ---
+      input.addEventListener('keydown', (e) => {
+        const items = Array.from(
+          dropdown.querySelectorAll('.select-overlay-item:not(.hidden)')
+        );
+        const active = dropdown.querySelector('.select-overlay-item.active');
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (items.length === 0) return;
+          if (!active) {
+            items[0].classList.add('active');
+            items[0].scrollIntoView({ block: 'nearest' });
+          } else {
+            const idx = items.indexOf(active);
+            active.classList.remove('active');
+            const next = items[Math.min(items.length - 1, idx + 1)];
+            next.classList.add('active');
+            next.scrollIntoView({ block: 'nearest' });
+          }
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (items.length === 0) return;
+          if (!active) {
+            items[items.length - 1].classList.add('active');
+            items[items.length - 1].scrollIntoView({ block: 'nearest' });
+          } else {
+            const idx = items.indexOf(active);
+            active.classList.remove('active');
+            const prev = items[Math.max(0, idx - 1)];
+            prev.classList.add('active');
+            prev.scrollIntoView({ block: 'nearest' });
+          }
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          const focused = dropdown.querySelector('.select-overlay-item.active');
+          if (focused) focused.click();
+        } else if (e.key === 'Escape') {
+          closeDropdown();
+          input.blur();
+        }
+      });
+
+      function filterDropdown(q) {
+        const ql = q.trim().toLowerCase();
+        const items = dropdown.querySelectorAll('.select-overlay-item');
+        let any = false;
+        items.forEach((it) => {
+          const txt = it.dataset.text || it.textContent || '';
+          if (ql === '' || txt.toLowerCase().includes(ql)) {
+            it.classList.remove('hidden');
+            any = true;
+          } else it.classList.add('hidden');
+          it.classList.remove('active');
+        });
+        let noEl = dropdown.querySelector('.select-overlay-noresults');
+        if (!any) {
+          if (!noEl) {
+            noEl = document.createElement('div');
+            noEl.className = 'select-overlay-noresults';
+            noEl.textContent = 'Ничего не найдено';
+            dropdown.appendChild(noEl);
+          }
+        } else if (noEl) noEl.remove();
+      }
+
+      input.addEventListener('input', () => {
+        filterDropdown(input.value);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!wrapper.contains(e.target)) closeDropdown();
+      });
+
+      select.addEventListener('change', () => syncInputWithSelect(select));
+
+      syncInputWithSelect(select);
+    }
+
+    function updateOverlayOptions(select) {
+      if (!select._overlay) createOverlayForSelect(select);
+      const { dropdown, input } = select._overlay;
+      dropdown.innerHTML = '';
+
+      const emptyOpt = Array.from(select.options).find((o) => o.value === '');
+      if (emptyOpt) {
+        const top = document.createElement('div');
+        top.className = 'select-overlay-item';
+        top.textContent = emptyOpt.textContent || 'Все';
+        top.dataset.value = '';
+        top.dataset.text = top.textContent;
+        top.addEventListener('click', () => {
+          select.value = '';
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+          syncInputWithSelect(select);
+          dropdown.style.display = 'none';
+        });
+        dropdown.appendChild(top);
+      }
+
+      Array.from(select.options).forEach((opt) => {
+        if (!opt.value) return;
+        const item = document.createElement('div');
+        item.className = 'select-overlay-item';
+        item.textContent = opt.textContent;
+        item.dataset.value = opt.value;
+        item.dataset.text = opt.textContent;
+        item.addEventListener('click', () => {
+          select.value = opt.value;
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+          syncInputWithSelect(select);
+          dropdown.style.display = 'none';
+        });
+        dropdown.appendChild(item);
+      });
+
+      if (input) {
+        input.value = '';
+        syncInputWithSelect(select);
+      }
+    }
+
+    function syncInputWithSelect(select) {
+      if (!select._overlay) return;
+      const { input } = select._overlay;
+      const cur = select.options[select.selectedIndex];
+      if (cur && cur.value) input.value = cur.textContent;
+      else input.value = ''; // Изменено: пустая строка по умолчанию для "Все"
+    }
+
+    // Патч для populateSelect
+    const originalPopulateSelect = window.populateSelect;
+    window.populateSelect = function (select, items, valueKey, textKey, defaultOption = true) {
+      originalPopulateSelect(select, items, valueKey, textKey, defaultOption);
+      let selEl = select;
+      if (typeof select === 'string') selEl = document.querySelector(select);
+      if (selEl)
+        setTimeout(() => {
+          createOverlayForSelect(selEl);
+          updateOverlayOptions(selEl);
+        }, 0);
+    };
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.controls select').forEach((sel) => {
+        createOverlayForSelect(sel);
+      });
+    });
+
+  </script>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const burger=document.createElement('div');
+  burger.className='burger';
+  burger.innerHTML='<span></span><span></span><span></span>';
+  document.querySelector('.header-left').prepend(burger);
+
+  const overlay=document.createElement('div');
+  overlay.className='overlay';
+  document.body.appendChild(overlay);
+
+  const sidebar=document.querySelector('nav.sidebar');
+  burger.addEventListener('click',()=>{
+    sidebar.classList.add('open');
+    overlay.classList.add('show');
+  });
+  overlay.addEventListener('click',()=>{
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  });
+});
+</script>
+
+</body>
+</html>
