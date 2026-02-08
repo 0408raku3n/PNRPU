@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Профиль студента — Система рейтингов ПНИПУ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#ffffff;
+      --panel:#f6f6f6;
+      --text:#111111;
+      --muted:#6b6b6b;
+      --accent:#000000;
+      --border:#e0e0e0;
+      --shadow:0 6px 18px rgba(0,0,0,0.08);
+      --radius:12px;
+      --header-bg:#111111;
+      --header-text:#ffffff;
+      --footer-bg:#111111;
+      --footer-text:#ffffff;
+      font-family:'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      font-size: 15px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    body {
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      position:relative;
+      height:64px;
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      padding:0 24px;
+      background:var(--header-bg);
+      color:var(--header-text);
+      border-bottom:1px solid rgba(255,255,255,0.1);
+      box-shadow:0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    header .logo {
+      position:absolute;
+      right:24px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    header .logo img {
+      height:80px;
+      width:80px;
+      object-fit:contain;
+    }
+
+    /* Back button */
+    .back-btn {
+      position:absolute;
+      left:24px;
+      background:var(--panel);
+      border:none;
+      border-radius:50%;
+      width:32px;
+      height:32px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      transition:transform 0.1s ease;
+    }
+    .back-btn:hover { transform:translateY(-2px); }
+    .back-btn svg {
+      width:20px;
+      height:20px;
+      stroke:var(--text);
+      stroke-width:2;
+      fill:none;
+    }
+
+    /* Layout */
+    main {
+      flex:1;
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:24px;
+      padding:30px;
+    }
+
+    .panel {
+      background:var(--panel);
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+
+    /* Left column */
+    .profile-card {
+      text-align:center;
+      margin-bottom:20px;
+    }
+
+    .avatar {
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      margin:0 auto 14px auto;
+      box-shadow:0 4px 12px rgba(0,0,0,0.1);
+      object-fit:cover;
+      border:2px solid var(--border);
+    }
+
+    .profile-name {
+      font-size:18px;
+      font-weight:600;
+      margin-bottom:6px;
+    }
+
+    .profile-rating {
+      font-size:15px;
+      font-weight:500;
+      color:var(--muted);
+    }
+
+    /* Radar chart */
+    .chart-card { text-align:center; }
+
+    canvas#radarChart {
+      width:100%;
+      max-width:300px;
+      height:300px;
+      margin-top:10px;
+    }
+
+    /* Info panel */
+    .info-card div {
+      margin-bottom:8px;
+      font-size:15px;
+    }
+
+    .info-card strong {
+      display:inline-block;
+      width:110px;
+      color:var(--muted);
+    }
+
+    /* Achievements */
+    .achievements {
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .achievement-item {
+      background:#fff;
+      border-radius:10px;
+      padding:12px 14px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.05);
+      border:1px solid rgba(0,0,0,0.05);
+    }
+
+    .achievement-item h4 {
+      margin-bottom:6px;
+      font-size:15px;
+      font-weight:600;
+    }
+
+    .achievement-item p {
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    /* Footer (совпадает с главной страницей) */
+    footer.app-footer {
+      width: 100%;
+      margin-top: auto;
+      box-sizing: border-box;
+      padding: 22px 28px;
+      background: #111111;
+      color: #ffffff;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    footer .blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+    }
+
+    footer .block {
+      min-width: 220px;
+      flex: 1;
+    }
+
+    footer .block strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    footer a {
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 900px) {
+      footer .blocks {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+    }
+
+    @media (max-width:560px){
+      header{height:56px;}
+      main{padding:20px;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="back-btn" title="Назад" onclick="history.back()">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+
+    <div class="logo">
+      <img src="img/PNRPU_white_logo.png" alt="logo">
+    </div>
+  </header>
+
+  <main>
+    <!-- Левая колонка -->
+    <div>
+      <div class="panel profile-card">
+        <img class="avatar" src="img/person_white.png" alt="avatar">
+        <div class="profile-name">Хамидуллин Даниил Ринатович</div>
+        <div class="profile-rating">Общий рейтинг: <strong>92.5</strong></div>
+      </div>
+
+      <div class="panel chart-card">
+        <h3>Диаграмма рейтинга</h3>
+        <canvas id="radarChart" width="300" height="300"></canvas>
+      </div>
+    </div>
+
+    <!-- Правая колонка -->
+    <div>
+      <div class="panel info-card">
+        <h3 style="margin-bottom:12px;">Информация</h3>
+        <div><strong>Факультет:</strong> Электротехнический факультет</div>
+        <div><strong>Кафедра:</strong> Информационные технологии и автоматизированные системы</div>
+        <div><strong>Группа:</strong> АСУ-22-1б</div>
+      </div>
+
+      <div class="panel" style="margin-top:20px;">
+        <h3 style="margin-bottom:12px;">Достижения</h3>
+        <div class="achievements">
+          <div class="achievement-item">
+            <h4>Бывший руководитель медиацентра ЭТФ</h4>
+            <p>Управление командой медиацентра, администрирование группы ВК</p>
+          </div>
+          <div class="achievement-item">
+            <h4>Знак отличия ПНИПУ за общественную деятельность III степени</h4>
+            <p>За активное участие в общественной жизни вуза и факультета</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="blocks">
+      <div class="block">
+        <strong>Система рейтингов ПНИПУ</strong>
+        Интеллектуальная система расчета рейтинга<br>
+        студентов Пермского Политеха
+      </div>
+
+      <div class="block">
+        <strong>Контакты</strong>
+        614990, Пермский край, г. Пермь<br>
+        Комсомольский проспект, д. 29<br>
+        +7 (342) 2-198-520<br>
+        kanc@pstu.ru
+      </div>
+
+      <div class="block">
+        <strong><a href="#">Политика конфиденциальности</a></strong>
+      </div>
+
+      <div class="block">
+        <strong><a href="#">Условия использования</a></strong>
+      </div>
+
+      <div class="block">
+        <strong>Разработчик</strong>
+        Лаборатория "Интеллектуальные технологии в образовании" АСУ ВУЗ<br>
+        Все права защищены © 2025
+      </div>
+    </div>
+  </footer>
+
+
+
+  <script>
+    // --- Фиктивные данные для диаграммы ---
+    const data = {
+      labels: ["Учеб.", "Общ.", "Спорт.", "Науч.", "Вол.", "Твор."],
+      values: [85, 72, 64, 90, 78, 70]
+    };
+
+    const canvas = document.getElementById("radarChart");
+    const ctx = canvas.getContext("2d");
+    const cx = canvas.width/2;
+    const cy = canvas.height/2;
+    const radius = 110;
+    const count = data.labels.length;
+
+    function drawRadar(highlightIndex = -1) {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.strokeStyle = "#999";
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.6;
+
+      for (let r=20; r<=radius; r+=20) {
+        ctx.beginPath();
+        for (let i=0;i<count;i++){
+          const angle = (Math.PI*2*i/count) - Math.PI/2;
+          const x = cx + r*Math.cos(angle);
+          const y = cy + r*Math.sin(angle);
+          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = "rgba(0,0,0,0.2)";
+      for (let i=0;i<count;i++){
+        const angle = (Math.PI*2*i/count) - Math.PI/2;
+        ctx.beginPath();
+        ctx.moveTo(cx,cy);
+        ctx.lineTo(cx + radius*Math.cos(angle), cy + radius*Math.sin(angle));
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = "#111";
+      ctx.font = "13px Roboto";
+      for (let i=0;i<count;i++){
+        const angle = (Math.PI*2*i/count) - Math.PI/2;
+        const x = cx + (radius+14)*Math.cos(angle);
+        const y = cy + (radius+14)*Math.sin(angle);
+        ctx.textAlign = (x>cx)?"left":(x<cx)?"right":"center";
+        ctx.textBaseline = (y>cy)?"top":(y<cy)?"bottom":"middle";
+        ctx.fillText(data.labels[i],x,y);
+      }
+
+      ctx.beginPath();
+      ctx.globalAlpha = 0.4;
+      ctx.fillStyle = "#000";
+      data.values.forEach((v,i)=>{
+        const angle = (Math.PI*2*i/count) - Math.PI/2;
+        const r = (v/100)*radius;
+        const x = cx + r*Math.cos(angle);
+        const y = cy + r*Math.sin(angle);
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      for (let i=0;i<count;i++){
+        const angle = (Math.PI*2*i/count) - Math.PI/2;
+        const r = (data.values[i]/100)*radius;
+        const x = cx + r*Math.cos(angle);
+        const y = cy + r*Math.sin(angle);
+        ctx.beginPath();
+        ctx.arc(x,y,4,0,Math.PI*2);
+        ctx.fillStyle = (i===highlightIndex)?"#000":"#444";
+        ctx.fill();
+      }
+    }
+
+    drawRadar();
+
+    canvas.addEventListener("mousemove", e=>{
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left - cx;
+      const y = e.clientY - rect.top - cy;
+      const angle = (Math.atan2(y,x) + Math.PI*2) % (Math.PI*2);
+      const seg = Math.floor((angle + Math.PI/2 + Math.PI*2)/(Math.PI*2/count)) % count;
+      drawRadar(seg);
+      canvas.title = data.labels[seg] + ": " + data.values[seg];
+    });
+    canvas.addEventListener("mouseleave", ()=>drawRadar());
+  </script>
+</body>
+</html>

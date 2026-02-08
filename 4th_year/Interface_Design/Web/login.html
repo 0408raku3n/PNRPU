@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Авторизация — Система рейтингов ПНИПУ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#ffffff;
+      --panel:#f6f6f6;
+      --text:#111111;
+      --muted:#6b6b6b;
+      --accent:#000000;
+      --shadow:0 6px 18px rgba(0,0,0,0.08);
+      --radius:12px;
+      font-family:'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 380px;
+    }
+
+    .logo-block {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 8px; /* убрано расстояние между логотипом и формой */
+    }
+
+    .logo-block img {
+      width: calc(100% / 3); /* ширина логотипа равна трети формы */
+      height: auto;
+      object-fit: contain;
+    }
+
+    .logo-block .title {
+      text-align: right;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--text);
+      max-width: 230px;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .login-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      background: var(--panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px 32px;
+    }
+
+    h2 {
+      align-self: center;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      width: 100%;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .input-group input {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: #fff;
+      font-size: 15px;
+    }
+
+    .options {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .options label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .options a {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .options a:hover {
+      text-decoration: underline;
+    }
+
+    .btn {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform 0.1s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    @media (max-width:480px){
+      .auth-container { width:90%; }
+      .login-wrapper { padding:28px 20px; }
+      .logo-block .title { font-size: 18px; max-width: 180px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="logo-block">
+      <img src="img/PNRPU_logo.png" alt="logo">
+      <div class="title">Система рейтингов<br>ПНИПУ</div>
+    </div>
+
+    <div class="login-wrapper">
+      <h2>Авторизация</h2>
+
+      <div class="input-group">
+        <input type="text" id="login" placeholder="Логин" autocomplete="off" />
+      </div>
+
+      <div class="input-group">
+        <input type="password" id="password" placeholder="Пароль" />
+      </div>
+
+      <div class="options">
+        <label><input type="checkbox" id="remember"> Запомнить меня</label>
+        <a href="#">Забыли пароль?</a>
+      </div>
+
+      <button class="btn" id="loginBtn">Войти</button>
+    </div>
+  </div>
+
+  <footer>© 2025 ПНИПУ</footer>
+
+  <script>
+    // Простая фиктивная авторизация
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const user = document.getElementById('login').value.trim();
+      const pass = document.getElementById('password').value.trim();
+
+      if (user === "KhamidullinDR" && pass === "12345") {
+        alert("Добро пожаловать, " + user + "!");
+        window.location.href = "rating.html";
+      } else {
+        alert("Неверный логин или пароль.");
+      }
+    });
+  </script>
+</body>
+</html>
